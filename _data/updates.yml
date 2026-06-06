@@ -1,0 +1,60 @@
+- date: 2026-05-14
+  title: "Paper accepted (3rd author): Predicting plastic strain localization in porous solids using GNNs. In collaboration with Aarhus University."
+
+- date: 2026-02-15
+  title: "LLM-evolved digital art project"
+  link: portfolio/digital-art-llm-evolved/
+
+- date: 2025-10-01
+  title: "Paper: Mixing data-driven and physics-based constitutive models using uncertainty-driven phase fields"
+  link: https://onlinelibrary.wiley.com/doi/full/10.1002/nme.70162
+
+- date: 2025-10-30
+  title: "Poster at Engineering Mechanics symposium"
+
+- date: 2025-07-01
+  title: "Talk at CM3P (Porto): Accelerating Multi-Scale Simulations using Uncertainty-Driven Phase-Field Mixtures of Constitutive Models"
+
+- date: 2025-05-22
+  title: "Assisted organization and presented talk at EuroMech (Gothenburg): A microstructure-based surrogate for multiscale simulations using GNNs"
+
+- date: 2025-04-19
+  title: "AI Safety Camp project: Mechanistic Interpretability Via Learning Differential Equations"
+
+- date: 2025-04-03
+  title: "Talk at Graphs & Data (Delft)"
+  link: https://graphsdataseminar-tudelft.github.io/past_talks/20250403.html#accelerating-simulations-of-materials-using-graph-neural-networks-with-embedded-constitutive-models
+
+- date: 2025-02-18
+  title: "Talk at AICOMAS (Paris): Uncertainty-Driven Phase-Field Mixtures of Constitutive Models"
+
+- date: 2024-12-15
+  title: "Dutch AI Safety Retreat. Individual project (2nd place): Ensemble fine-tuning for pluralistic alignment"
+
+- date: 2024-11-12
+  title: "Poster at Dutch Computational Science Day (Utrecht)"
+
+- date: 2024-11-01
+  title: "Talk at DelftBlue supercomputer Summit: Leveraging GPU's for GNNs."
+
+- date: 2024-07-01
+  title: "Paper published: A microstructure-based graph neural network for accelerating multiscale simulations"
+  link: https://www.sciencedirect.com/science/article/pii/S0045782524002573
+
+- date: 2024-06-04
+  title: "Talk at ECCOMAS (Lisbon)"
+
+- date: 2024-03-01
+  title: "3-month research visit to Columbia University, collaborating with WaiChing Sun"
+
+- date: 2023-10-13
+  title: "Attended CMCS"
+
+- date: 2023-09-26
+  title: "Talk at MMLDE (El Paso)"
+
+- date: 2022-10-22
+  title: "Attended AI Safety NL retreat"
+
+- date: 2022-07-29
+  title: "Deep Learning Summer School"

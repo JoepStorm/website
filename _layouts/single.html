@@ -45,6 +45,31 @@ layout: default
       {% endunless %}
 
       <section class="page__content" itemprop="text">
+        {%- assign page_media_src = page.header.media | default: page.header.iframe -%}
+        {% if page_media_src %}
+          {%- assign page_media_lower = page_media_src | downcase | split: '?' | first | split: '#' | first -%}
+          {%- assign page_media_is_image = false -%}
+          {%- if page_media_lower contains '.png' or page_media_lower contains '.jpg' or page_media_lower contains '.jpeg' or page_media_lower contains '.gif' or page_media_lower contains '.webp' or page_media_lower contains '.svg' or page_media_lower contains '.avif' -%}
+            {%- assign page_media_is_image = true -%}
+          {%- endif -%}
+          {%- assign page_media_first = page_media_src | slice: 0, 1 -%}
+          {%- if page_media_src contains '://' -%}
+            {%- assign page_media_url = page_media_src -%}
+          {%- elsif page_media_first == '/' -%}
+            {%- assign page_media_url = page_media_src | prepend: base_path -%}
+          {%- else -%}
+            {%- assign page_media_url = page_media_src | prepend: '/' | prepend: base_path -%}
+          {%- endif -%}
+          <div class="page__media" style="margin: 0 0 1.5em; max-width: 100%;">
+            {% if page_media_is_image %}
+              <img src="{{ page_media_url }}" alt="{{ page.title | escape }}" style="max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 6px;" loading="lazy">
+            {% else %}
+              <div style="position: relative; width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--global-border-color); border-radius: 6px; overflow: hidden;">
+                <iframe src="{{ page_media_url }}" title="{{ page.title | escape }}" loading="lazy" style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0;" allow="autoplay; fullscreen" referrerpolicy="no-referrer-when-downgrade"></iframe>
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
         {{ content }}
 
         {% if page.citation and page.paperurl and page.slidesurl and page.bibtexurl %}

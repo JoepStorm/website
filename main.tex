@@ -1,0 +1,334 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% I wanted a more consistent way of creating CVs/resumes,
+% so I made a few environments for adding content.
+% There's {education}, {research_exp}, and {employment}.
+% They take certain arguments, such as start and end dates,
+% which are automatically placed into position on the
+% document. Use a separate instance of each for each item
+% on your CV.
+% Publications are rendered with \fullcite, which pulls
+% bibtex items from references.bib.
+%
+% Published by Hannah W Richards
+% Creative Commons CC BY 4.0 License
+% Originally published September 2019
+% Revised March 2020
+% Revised November 2020
+%
+% hannah.willow.richards@gmail.com
+% Please use this template as you wish, and feel free to
+% send me an email if you were able to put it to good use!
+% I always like to hear from people. If you modify and
+% republish the template, please attribute me.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass{cv}
+\usepackage{array}
+\usepackage[top=0.5in, left=1.0in, right=1.0in, bottom=.75in]{geometry}
+\usepackage{biblatex}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+
+% Set color
+\definecolor{custom_blue}{rgb}{0.0, 0.53, 0.74}
+
+
+
+\newcommand{\sectionheading}[1]{%
+  \vspace{0.05in}%
+  {\textcolor{custom_blue}{\Large \textbf{#1}}}\\%
+  \vspace{-0.31in}%
+
+  \textcolor{custom_blue}{\rule{\textwidth}{.5pt}}%
+
+  \vspace{0.05in}%
+
+}
+\hypersetup{
+    colorlinks=false,
+    pdfborder={0 0 0}
+}
+\setlength{\tabcolsep}{8pt}
+
+% You can place bibtex citatinos for your publications in the references.bib file, which is called here. You can download bibtex citations for your publications so that you don't have to type all the information in for each one.
+\addbibresource{references.bib}
+
+
+\newcommand{\itemtitle}[2]{%
+  \noindent\begin{tabular}{ m{11.7cm} m{4.0cm} }
+  \hspace{-.4cm}
+  #1 & \raggedleft #2
+  \end{tabular}%
+}
+
+\newcommand{\itemdetails}[1]{%
+  \begin{tabular}{ m{16.1cm} }
+  #1
+  \end{tabular}%
+}
+
+
+\begin{document}
+	\begin{center}
+%	    \textit{R\'esum\'e}\\
+		{\Huge \textcolor{custom_blue}{\textbf{Joep Storm}}\par}
+		\vspace{0.1cm}
+\begin{tabular}{c c c}
+\includegraphics[height=0.8em]{figures/location_icon.png} Delft, Netherlands & \includegraphics[height=.8em]{figures/email_icon.png} storm.joep@gmail.com & \href{https://github.com/joepstorm}{\includegraphics[height=0.8em]{figures/github-mark.png} github.com/joepstorm}
+\end{tabular}
+\end{center}
+\vspace{-0.1in}%
+
+Reliable analytical researcher with a strong machine learning background and effective communication skills.
+%The rapid development of general-purpose AI that is reshaping society motivates me to contribute to making this transformation positive.
+The rapid development of AI is reshaping society and I want to positively influence this transformation.
+%Outside of my academic work, I've dedicated time to AI safety through organizing initiatives and research programs.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sectionheading{Research Experience}
+
+\itemtitle{\textbf{PhD Computational Mechanics} at Delft University of Technology}{ Jul. 2021 - Present}
+\itemdetails{
+\textbf{Dissertation topic:} Accelerating Multiscale Finite Element Models with Active Learning Surrogates \\
+\textbf{Lab:} Statistical Learning for Intelligent Material Modeling \\
+\textbf{Advisors:} Dr. Iuri B.C.M. Rocha \& Dr.ir. Frans P. van der Meer
+}
+
+\vspace{0.1in}
+
+\itemtitle{\textbf{AI Safety Camp} - online research project}{Dec. 2024 - Apr. 2025}
+\itemdetails{
+Collaborated with a team of researchers to investigate mechanistic interpretability of a transformer model trained to predict ordinary differential equations.
+}
+
+\vspace{0.1in}
+
+\itemtitle{\textbf{Visiting Research Scholar} at Columbia University}{Mar. 2024 - Jun. 2024}
+\itemdetails{
+Collaborated with Prof. WaiChing Sun, researching an adaptive machine learning surrogate that reverts back to physics when it becomes uncertain. This work is published in a journal paper. \href{https://onlinelibrary.wiley.com/doi/full/10.1002/nme.70162}{\includegraphics[height=0.8em]{figures/web-link-icon.png}}
+}
+
+\vspace{0.1in}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sectionheading{Education}
+
+\itemtitle{\textbf{MSc Structural Engineering} at Delft University of Technology}{2018 - 2021}
+\itemdetails{
+Thesis project: \textit{High-dimensional numerical optimization of fiber reinforced polymers with variational autoencoders and Bayesian optimization.}
+}
+
+\vspace{0.1in}
+
+\itemtitle{\textbf{Premaster programme} at Delft University of Technology}{2017 - 2018}
+
+\vspace{0.1in}
+
+\itemtitle{\textbf{BSc Civil Engineering} at The Hague University of Applied Sciences}{2012 - 2016}
+
+\vspace{0.1in}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{\Large Awards \& Scholarships}\\
+\sectionheading{Awards \& Scholarships}
+
+\itemtitle{\textbf{Dutch AI Safety project competition} - second place}{2025}
+\itemdetails{Project: \textit{Ensemble Fine-Tuning for Pluralistic Alignment} \href{https://surfdrive.surf.nl/s/fWdTOesYAWXQ7eh}{\includegraphics[height=0.8em]{figures/web-link-icon.png}} }
+
+\vspace{0.1in}
+
+\itemtitle{\textbf{North America Travel Grant} for AI PhD candidates}{2023}
+
+\vspace{0.1in}
+
+\itemtitle{\textbf{Best Poster award} at the Engineering Mechanics symposium \href{https://surfdrive.surf.nl/s/d4rn3SgomGBZ9ik}{\includegraphics[height=0.8em]{figures/web-link-icon.png}} }{2022}
+
+\vspace{0.1in}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sectionheading{Organizing activities}
+\itemtitle{\textbf{Boardmember of the Delft AI Safety Initiative}}{Feb. 2024 - Jun. 2025}
+\itemdetails{Developed and facilitated AI Safety courses for students and professionals.}
+
+\vspace{0.1in}
+
+\itemtitle{\textbf{Organizing committee} for colloquium, in Gothenburg, Sweden}{Oct. 2024 - May 2025}
+\itemdetails{Colloquium: \textit{Data-driven mechanics and physics of materials}. Developed sections of the website, created the program booklet, and managed registrations.}
+
+\vspace{0.1in}
+
+\itemtitle{\textbf{Founder of student association Effective Altruism Delft}}{Jan. 2022 - Aug. 2023}
+\itemdetails{Initiated and lead a board that organized Effective Altruism courses, career workshops, and discussion evenings for more than 100 students.}
+
+\vspace{0.1in}
+
+\itemtitle{\textbf{Organizing committee} for symposium in Delft}{Sep. 2019 - Jun. 2020}
+\itemdetails{Symposium: \textit{Value of Design}. My main responsibility was handling finances.}
+
+%%%%THESE LINES ADDED FOR SOME EXTRA WHITESPACE AS FILLER.
+\newpage
+\itemdetails{}
+
+\vspace{.2in}
+
+\sectionheading{Invited Talks}
+\itemtitle{\textbf{Graphs\&Data@TUDelft seminar}}{Apr. 2025}
+\itemdetails{Title: \textit{Accelerating Simulations of Materials using Graph Neural Networks with Embedded Constitutive Models}
+\href{https://graphsdataseminar-tudelft.github.io/past_talks/20250403.html}{\includegraphics[height=0.8em]{figures/web-link-icon.png}}
+}
+
+\vspace{0.1in}
+
+\itemtitle{\textbf{DelftBlue User Summit}}{Nov. 2024}
+\itemdetails{Title: \textit{Efficiently training GNN models using GPU nodes on the DelftBlue cluster} \href{https://surfdrive.surf.nl/s/lgWLTVcUnRFjgVO}{\includegraphics[height=0.8em]{figures/web-link-icon.png}}
+}
+
+\vspace{0.1in}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sectionheading{Skills}
+
+\itemdetails{
+\hspace{-.2cm}\textbf{Programming}: Python, C++, Jax, PyTorch, Git, Docker\\
+\vspace{0.07in}
+
+\hspace{-.2cm}\textbf{Skills}: Academic writing, Data visualisation, Public speaking, Supervision, ML engineering. \\
+\vspace{0.07in}
+
+\hspace{-.2cm}\textbf{Languages}: Dutch (native), English (fluent) \\
+}
+
+\vspace{0.1in}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sectionheading{Selected publications}
+
+\itemdetails{
+\hspace{-.2cm}\textbf{Joep Storm}, WaiChing Sun, Iuri BCM Rocha, Frans P. van der Meer. Mixing data-driven and physics-based constitutive models using uncertainty-driven phase fields. \textit{International Journal for Numerical Methods in Engineering} 126, no. 20 (2025): e70162 \href{https://onlinelibrary.wiley.com/doi/full/10.1002/nme.70162}{\includegraphics[height=0.8em]{figures/web-link-icon.png}}
+}
+
+\vspace{0.1in}
+
+\itemdetails{
+\hspace{-.2cm}\textbf{Joep Storm}, Iuri BCM Rocha, Frans P. van der Meer. A microstructure-based graph neural network for accelerating multiscale simulations. \textit{Computer Methods in Applied Mechanics and Engineering} 427 (2024): 117001. \href{https://www.sciencedirect.com/science/article/pii/S0045782524002573}{\includegraphics[height=0.8em]{figures/web-link-icon.png}}
+}
+
+\vspace{0.1in}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sectionheading{Teaching \& Supervision}
+
+\itemtitle{\textbf{Courses}}{}
+
+\vspace{0.07in}
+
+\itemtitle{$\cdot$ \textbf{Data Science and Artificial Intelligence for Engineers}}{2023 - Present}
+\itemdetails{Created Jupyter book material covering topics such as classification and Gaussian Process regression. Supervised several projects. }
+
+\vspace{0.04in}
+
+\itemtitle{$\cdot$ \textbf{Advanced Computational Modeling}}{2024 - 2025}
+\itemdetails{Guest lecturer on machine learning. Supervised several projects.}
+
+\vspace{0.04in}
+
+\itemtitle{$\cdot$ \textbf{Modelling, Uncertainty \& Data for Engineers}}{2022 - 2024}
+\itemdetails{Teaching assistant.}
+
+\vspace{0.1in}
+
+\itemtitle{\textbf{Project Supervision}}{}
+
+\vspace{0.07in}
+
+\itemtitle{$\cdot$ \textbf{Master Thesis Project} by Tobias Kristensen, Rasmus Jakobsen, Rasmus Madsen.}{2024 - 2025}
+\itemdetails{\textit{Shear Band Networks for Limit State Analysis using Graph Neural Networks}}
+
+\vspace{0.04in}
+
+\itemtitle{$\cdot$ \textbf{Master Thesis Project} by Jos te Hennepe.}{2024 - 2025}
+\itemdetails{\textit{Mapping Between Latent Spaces of History Dependent Material Models}}
+
+\vspace{0.04in}
+
+\itemtitle{$\cdot$ \textbf{Master Thesis Project} by Lex Niessen.}{2022}
+\itemdetails{\textit{Graph Neural Networks and Beam Dynamics}}
+
+\vspace{0.04in}
+
+\itemtitle{$\cdot$ \textbf{Capstone AI Projects}}{2021 - 2023}
+\itemdetails{Supervised several student projects where AI is applied to computational mechanics.}
+
+%\begin{tabular}{ m{3.1cm}  m{12.4cm} }
+%2024 - present & Advanced Computational Modeling \\
+%& \textit{Guest lecturer on machine learning. Project lead.} \\
+%& \\
+%
+%2023 - present & Data Science and Artificial Intelligence for Engineers \\
+%& \textit{Created Jupyter book material. Project lead.} \\
+%& \\
+%
+%2022 - 2024 & Modelling, Uncertainty \& Data for Engineers \\
+%& \textit{Teaching assistant.} \\
+%\end{tabular}
+
+%\textbf{Projects}\\
+%\begin{tabular}{ m{3.1cm}  m{12.4cm} }
+%
+%2024 - 2025 & Tobias Kristensen, Rasmus Jakobsen, Rasmus Madsen \\
+%& Master Thesis Project: \textit{Shear Band Networks for Limit State Analysis using Graph Neural Networks} \\
+%& \\
+%
+%2024 - 2025 & Jos te Hennepe \\
+%& Master Thesis Project: \textit{Mapping Between Latent Spaces of History Dependent Material Models}  \\
+%& \\
+%
+%2022 & Lex Niessen \\
+%& Master Thesis Project: \textit{Graph Neural Networks and Beam Dynamics} \\
+%& \\
+%
+%2021 - 2023 & Capstone AI Projects \\
+%& Supervised several student projects where AI is applied to computational mechanics. \\
+%
+%%2019 - 2020 & Mathematics tutoring \\
+%%& \\
+%\end{tabular}
+
+%\vspace{0.1in}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\sectionheading{References}
+%\itemdetails{Available upon request.}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\newpage
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\sectionheading{Work Experience}
+%
+%\begin{tabular}{ m{3.1cm}  m{12.4cm} }
+%03/2017-07/2017 & Engineering firm Van der Ven BV \\
+%& \textit{Structural Engineer} \\
+%%& Performed structural analysis of buildings, and converted these to structural drawings. \\
+%& \\
+%
+%%09/2015-11/2015 & \textbf{Huisman Equipment} \\
+%%& \textit{Minor offshore technology} \\
+%%%& Developed an analysis tool to compare Serviceability Limit State to Ultimate Limit State for offshore pedestal mounted cranes.  \\
+%%& \\
+%
+%08/2014-02/2015 & Ballast Nedam \\
+%& \textit{Planner} \\
+%%& On-site planning for the Dutch coastal redesign with an integrated parking lot in Katwijk.\\
+%& \\
+%
+%\end{tabular}
+
+
+\end{document}

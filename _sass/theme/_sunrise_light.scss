@@ -1,23 +1,24 @@
 /* ==========================================================================
    SUNRISE THEME - LIGHT VERSION
    ========================================================================== */
-/* Color codes used for the theme */
-$primary-color              : #fc3a52;
-$dark-primary-color         : mix(#000, $primary-color, 40%);
-$darker-primary-color       : mix(#000, $primary-color, 60%);
-$light-primary-color        : mix(#fff, $primary-color, 50%);
+/* Color codes used for the theme — custom muted palette: deep teal + coral accent on warm cream */
+$primary-color              : #2a6f7a; /* deep teal */
+$accent-color               : #d96e4b; /* warm coral, used for hover/highlight */
+$dark-primary-color         : mix(#000, $primary-color, 25%);
+$darker-primary-color       : mix(#000, $primary-color, 45%);
+$light-primary-color        : mix(#fff, $primary-color, 55%);
 $lighter-primary-color      : mix(#fff, $primary-color, 90%);
-$background                 : #e8d5b7;
-$background-light           : mix(#fff, $background, 20%);
-$background-lighter        : #ffffff;
-$text                      : #000000;
-$text-muted                : #0e2431;
-$link                      : mix(#000, $primary-color, 10%);
-$link-dark                 : mix(#000, $link, 25%);
-$link-light                : mix(#fff, $link, 25%);
-$footer                    : #f9b248;
-$border                    : mix(#000, $background, 20%);
-$border-dark               : mix(#000, $background, 30%);
+$background                 : #f5efe6; /* warm cream */
+$background-light           : mix(#fff, $background, 35%);
+$background-lighter         : #ffffff;
+$text                       : #1d2630;
+$text-muted                 : #4a5560;
+$link                       : $primary-color;
+$link-dark                  : mix(#000, $link, 25%);
+$link-light                 : $accent-color;
+$footer                     : #2a6f7a;
+$border                     : mix(#000, $background, 12%);
+$border-dark                : mix(#000, $background, 25%);
 
 /* Color codes used for the site */
 $danger-color               : #cc6666;
