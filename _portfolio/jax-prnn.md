@@ -11,4 +11,13 @@ header:
 
 ---
 
-[//]: # (See the publication: [Mixing data-driven and physics-based constitutive models using uncertainty-driven phase fields]&#40;/publication/2025-uncertainty-driven-phase-fields&#41;.)
+### Physically Recurrent Neural Networks using JAX
+
+This is a JAX-based implementation of PRNNs. This version accelerates training and inference time by >10x.
+
+Features:
+- Just-In-Time compilation
+- Scan function instead of for loop
+- Encoder and Decoder run only once per sequence, instead of once per time step
+- Einsum notation
+- Jupyter notebook that demonstrates a simple PRNN training
