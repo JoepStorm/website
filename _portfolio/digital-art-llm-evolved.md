@@ -31,35 +31,6 @@ Note that all these simulations run locally in your browser.
   <a href="https://joepstorm.github.io/digital-art/gallery.html?run=run_03" target="_blank" rel="noopener">Browse all iterations of this type.</a> ·
 </p>
 
-[//]: # (### Flocking)
-
-[//]: # ()
-[//]: # (<div style="position: relative; width: 100%; max-width: 720px; margin: 1.5em auto; aspect-ratio: 16 / 10; border: 1px solid var&#40;--global-border-color&#41;; border-radius: 6px; overflow: hidden; background: #000;">)
-
-[//]: # (  <iframe)
-
-[//]: # (    src="https://joepstorm.github.io/digital-art/viewer.html?run=run_11&gen=02")
-
-[//]: # (    title="LLM-evolved simulation, 'Multi-agent'")
-
-[//]: # (    loading="lazy")
-
-[//]: # (    style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0;")
-
-[//]: # (    allow="autoplay; fullscreen")
-
-[//]: # (    referrerpolicy="no-referrer-when-downgrade")
-
-[//]: # (  ></iframe>)
-
-[//]: # (</div>)
-
-[//]: # ()
-[//]: # (<p style="text-align: center; font-size: 0.9em;">)
-
-[//]: # (  <a href="https://joepstorm.github.io/digital-art/gallery.html?run=run_11" target="_blank" rel="noopener">Browse all iterations of this type.</a> ·)
-
-[//]: # (</p>)
 
 ### Chaos vs Order
 
