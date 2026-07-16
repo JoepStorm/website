@@ -23,6 +23,7 @@ During my PhD, I've had research collaborations with Columbia and Aarhus Univers
 
 Next to my work on computational mechanics, I've also been drawn to technical AI Safety.
 I've organized programs at the Delft AI Safety Initiative, and worked on several projects, such as AI Safety Camp and the Dutch AI Safety project competition.
+I am actively looking for a full-time role to contribute to technical research on aligning AI. 
 
 ## Updates
 
