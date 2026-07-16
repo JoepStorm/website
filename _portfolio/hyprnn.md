@@ -14,7 +14,7 @@ header:
 
 This work was performed in collaboration with Iuri Rocha, Sarah Schyck, Kunal Masania, and Frans van der Meer.
 
-Multiscale optimization of microstructured sustainable materials needs surrogate models, but training one across a range of microstructures normally demands prohibitive amounts of data. The work solves this by conditioning a hybrid physics-data surrogate on microstructural variables through a hypernetwork, a HyPRNN, which stays accurate on small datasets and is validated against a full FE$^2$ simulation of a mycelium-woodchip composite. Applied to a functionally graded disk it cuts peak stress by 42% versus a random microstructure, and conditioning directly on manufacturing variables extends the approach into a practical route for engineering the microscale to hit target macroscale behavior. 
+Multiscale optimization of microstructured sustainable materials needs surrogate models, but training one across a range of microstructures normally demands prohibitive amounts of data. The work solves this by conditioning a hybrid physics-data surrogate on microstructural variables through a hypernetwork, a HyPRNN, which stays accurate on small datasets and is validated against a full FE² simulation of a mycelium-woodchip composite. Applied to a functionally graded disk it cuts peak stress by 42% versus a random microstructure, and conditioning directly on manufacturing variables extends the approach into a practical route for engineering the microscale to hit target macroscale behavior. 
 
 Link to preprint: <https://arxiv.org/abs/2607.13688> 
 
@@ -27,7 +27,7 @@ GitHub Repository link: <https://github.com/JoepStorm/HyPRNN>
 
 ## Multiscale optimization
 
-The HyPRNN makes accurate predictions based on only 32 training samples. We validate this in a FE$^2$ simulation
+The HyPRNN makes accurate predictions based on only 32 training samples. We validate this in an FE² simulation
 <figure>
   <img src="/images/projects/hyprnn/val_deformation.png" alt="val_deformation" style="max-width: 800px; margin: 0 auto;">
   <figcaption>Multiscale simulations of the ground truth (top left), and various surrogate models. The HyPRNN performs well, even in the low-data regime. </figcaption>
@@ -53,7 +53,7 @@ Parametrizing the microstructure is challenging, and some other works resolve th
 This allows realistic optimization of multiscale simulation, such as to control the macroscopic deformation. 
 
 <figure class="half">
-  <img src="/images/projects/hyprnn/grav_dep_baseline.png" alt="grav_dep_baseline" style="max-height: 300px; margin: 0 auto;">
-  <img src="/images/projects/hyprnn/grav_dep_optimal_crop.png" alt="grav_dep_optimal_crop" style="max-height: 300px; margin: 0 auto;">
-  <figcaption>Macroscale deformation can be controlled; here the goal was to minimize the horizontal deformation of the center hole. </figcaption>
+  <img src="/images/projects/hyprnn/grav_dep_baseline.png" alt="grav_dep_baseline" style="max-width: 324px; margin: 0 auto;">
+  <img src="/images/projects/hyprnn/grav_dep_optimal_crop.png" alt="grav_dep_optimal_crop" style="max-width: 300px; margin: 0 auto;">
+  <figcaption>Macroscale deformation can be controlled. The left figure shows the reference deformation and the right figure shows the optimized deformation and woodchip placement. The goal was to minimize the horizontal deformation of the center hole. </figcaption>
 </figure>
