@@ -21,7 +21,7 @@ Link to preprint: <https://arxiv.org/abs/2607.13688>
 GitHub Repository link: <https://github.com/JoepStorm/HyPRNN>
 
 <figure>
-  <img src="/images/projects/hyprnn/Overview.png" alt="Overview" style="max-width: 650px; margin: 0 auto;">
+  <img src="/images/projects/hyprnn/Overview.png" alt="Overview" style="max-width: 800px; margin: 0 auto;">
   <figcaption>Overview for optimizing a graded multiscale material using a surrogate model conditioned on either microscale or manufacturing variables. </figcaption>
 </figure>
 
@@ -29,7 +29,7 @@ GitHub Repository link: <https://github.com/JoepStorm/HyPRNN>
 
 The HyPRNN makes accurate predictions based on only 32 training samples. We validate this in a FE$^2$ simulation
 <figure>
-  <img src="/images/projects/hyprnn/val_deformation.png" alt="val_deformation" style="max-width: 650px; margin: 0 auto;">
+  <img src="/images/projects/hyprnn/val_deformation.png" alt="val_deformation" style="max-width: 800px; margin: 0 auto;">
   <figcaption>Multiscale simulations of the ground truth (top left), and various surrogate models. The HyPRNN performs well, even in the low-data regime. </figcaption>
 </figure>
 
@@ -47,13 +47,13 @@ Parametrizing the microstructure is challenging, and some other works resolve th
 <figure class="half">
   <img src="/images/projects/hyprnn/grav_dep_init_0.png" alt="grav_dep_init_0" style="max-width: 200px; margin: 0 auto;">
   <img src="/images/projects/hyprnn/grav_dep_3d_box.png" alt="grav_dep_3d_box" style="max-width: 300px; margin: 0 auto;">
-  <figcaption>Optimization, made possible by the HyPRNN, leads to a significant reduction in peak stress. </figcaption>
+  <figcaption>Visualization of the gravity deposition simulation that mimics the manufacturing process. This links the manufacturing variables to the generated microstructure.</figcaption>
 </figure>
 
 This allows realistic optimization of multiscale simulation, such as to control the macroscopic deformation. 
 
 <figure class="half">
-  <img src="/images/projects/hyprnn/grav_dep_baseline.png" alt="grav_dep_baseline" style="max-width: 200px; margin: 0 auto;">
-  <img src="/images/projects/hyprnn/grav_dep_optimal_crop.png" alt="grav_dep_optimal_crop" style="max-width: 300px; margin: 0 auto;">
+  <img src="/images/projects/hyprnn/grav_dep_baseline.png" alt="grav_dep_baseline" style="max-height: 300px; margin: 0 auto;">
+  <img src="/images/projects/hyprnn/grav_dep_optimal_crop.png" alt="grav_dep_optimal_crop" style="max-height: 300px; margin: 0 auto;">
   <figcaption>Macroscale deformation can be controlled; here the goal was to minimize the horizontal deformation of the center hole. </figcaption>
 </figure>
