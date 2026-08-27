@@ -1,3 +1,7 @@
+- date: 2026-07-22
+  title: "Talk at World Congress on Computational Mechanics (München): Microstructure-Conditioned Surrogates For Multiscale Material Optimization"
+  link: https://wccm-eccomas2026.org/event/contribution/59d84c66-eb04-11f0-b205-000c29ddfc0c
+
 - date: 2026-06-04
   title: "Talk at Graphs & Data (Delft)"
   link: https://graphsdataseminar-tudelft.github.io/past_talks/20260604.html#predicting-plastic-strain-localization-in-porous-solids-using-graph-neural-networks
@@ -11,7 +15,7 @@
   link: portfolio/digital-art-llm-evolved/
 
 - date: 2025-10-01
-  title: "Paper: Mixing data-driven and physics-based constitutive models using uncertainty-driven phase fields"
+  title: "Paper out: Mixing data-driven and physics-based constitutive models using uncertainty-driven phase fields"
   link: https://onlinelibrary.wiley.com/doi/full/10.1002/nme.70162
 
 - date: 2025-10-30
