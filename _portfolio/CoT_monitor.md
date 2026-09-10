@@ -1,6 +1,6 @@
 ---
 title: "Chain-of-Thought Obfuscation"
-date: 2026-09-11
+date: 2026-09-10
 excerpt: "Experiments replicating the obfuscation of chain-of-thought reasoning in LLMs"
 collection: portfolio
 tags:
@@ -58,7 +58,8 @@ This sprint contains many limitations, some of which include:
   - Only a single RL run is performed.
   - Evaluation was done greedily at temperature=0.
   - The reward hacking is in-distribution of the training task.
-  - Highly capable LLMs are able to reason more during their forward passes, decreasing their monitorability. If this trend persists, it could make CoT-monitoring obsolete. 
+  - Highly capable LLMs are able to reason more during their forward passes, decreasing their monitorability. If this trend persists, it could make CoT-monitoring obsolete.
+
 ---
 
 <p id="fn1"><sup>1</sup> Chain-of-thought obfuscation learned from output supervision can generalise to unseen tasks, <a href="https://arxiv.org/abs/2601.23086">arxiv.org/abs/2601.23086</a>. <a href="#fnref1">&#8617;</a></p>
