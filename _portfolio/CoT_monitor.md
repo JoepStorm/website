@@ -3,6 +3,7 @@ title: "Chain-of-Thought Obfuscation"
 date: 2026-09-11
 excerpt: "Experiments replicating the obfuscation of chain-of-thought reasoning in LLMs"
 collection: portfolio
+hide_title: true # title used on the portfolio overview and browser tab, not shown on this page
 tags:
   - AI Safety
   - Research
