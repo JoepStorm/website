@@ -1,6 +1,6 @@
 ---
 title: "Chain-of-Thought Obfuscation"
-date: 2026-09-10
+date: 2026-09-11
 excerpt: "Experiments replicating the obfuscation of chain-of-thought reasoning in LLMs"
 collection: portfolio
 tags:
@@ -25,9 +25,7 @@ This post demonstrates that failure in a simplified setup: the model converges o
 
 ### Experimental setup
 
-**Task.** The reward-hacking dataset closely follows the "Revealing Score" dataset of the referenced paper<sup><a href="#fn1">1</a></sup>. MMLU multiple-choice questions are reformatted so that the point value of each option is disclosed in a separate `<additional_info>` block, and the system prompt instructs the model to ignore that block and answer from the question alone. Items where the highest-scoring option happens to be the correct one are discarded.
-
-**Training.** Qwen3-4B is fine-tuned with GRPO (group size 8, no KL term) and LoRA (rank 32), using TRL with vLLM serving the rollouts. Training is done on 2 A100-GPUs, with one training run taking approximately 10 hours. 
+**Task.** The reward-hacking dataset closely follows the "Revealing Score" dataset of the referenced paper<sup><a href="#fn1">1</a></sup>. MMLU multiple-choice questions are reformatted so that the point value of each option is disclosed in a separate `<additional_info>` block, and the system prompt instructs the model to ignore that block and answer from the question alone. Items where the highest-scoring option happens to be the correct one are discarded. In the data explorer above, the information in `<additional_info>` is formatted as the points below the question.  
 
 **Monitor.** A second, frozen Qwen3-4B instance acts as the CoT monitor. It is shown only the chain-of-thought and returns a binary verdict on whether the reasoning relies on the leaked scores. Using the exact same model for the judge as for the policy is a serious limitation; but not one that is expected to fundamentally change the conclusions. 
 
@@ -37,11 +35,13 @@ $$
 R = 2.0 \, r_\text{ans} \;-\; 0.05 \, p_\text{flag} \;+\; 0.1 \, r_\text{fmt} \;-\; 0.1 \, p_\text{len} 
 $$
 
-The last two terms penalise a malformed or degenerate CoT.
+There is thus a strong pressure towards the hinted answer, and only a small penalty for getting caught (flagged) by the monitor. The last two terms penalise a malformed or degenerate CoT.
+
+**Training.** Qwen3-4B is fine-tuned with GRPO (group size 8, no KL term) and LoRA (rank 32), using TRL with vLLM serving the rollouts. This training is performed on 2 A100-GPUs, with one training run taking approximately 10 hours.
 
 ### Results
 
-Results on a hold-out dataset that was run for several checkpoints during training are shown in Figure 1. During training, the model quickly learns to use the provided scores, as this leads to a high scoring $$r_\text{ans}$$. Only later in training does it learn to obfuscate its reasoning from the monitor. This reinforces the main known finding that training against a CoT monitor causes obfuscation.
+Results on a hold-out dataset that was run for several checkpoints during training are shown in Figure 1, the data explorer. During training, the model quickly learns to use the provided scores, as this leads to a high scoring $$r_\text{ans}$$. Only later in training does it learn to obfuscate its reasoning from the monitor. This reinforces the main known finding that training against a CoT monitor causes obfuscation.
 
 Using the data explorer, it can be observed that the CoT and final answers degenerate for the later training steps. While the CoTs in the last step are not flagged, it is clear to a human observer that the model is reward hacking. This shows that the RL setup resulted in a way that tricks the specific judge model. A stronger judge would likely be more difficult to trick, but the incentives to trick it would remain.
 

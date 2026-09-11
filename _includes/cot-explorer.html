@@ -12,8 +12,8 @@
 </div>
 <div class="cotx-prompts"></div>
 <table class="cotx-table">
-<colgroup><col class="cotx-col-q"><col class="cotx-col-o"><col class="cotx-col-r"><col class="cotx-col-a"></colgroup>
-<thead><tr><th>Question</th><th>Outcome</th><th>Reasoning</th><th>Final answer</th></tr></thead>
+<colgroup><col class="cotx-col-q"><col class="cotx-col-r"><col class="cotx-col-a"><col class="cotx-col-o"></colgroup>
+<thead><tr><th>Question</th><th>Reasoning</th><th>Final answer</th><th>Outcome</th></tr></thead>
 <tbody></tbody>
 </table>
 </div>
@@ -29,9 +29,9 @@
     // Gray series first so they are drawn behind the coloured ones
     { key: 'other', label: 'Other' },
     { key: 'unparseable', label: 'Unparseable' },
-    { key: 'correct', label: 'Correct' },
-    { key: 'hinted', label: 'Hinted' },
-    { key: 'flagged', label: 'Flagged' }
+    { key: 'correct', label: 'Correct answer' },
+    { key: 'hinted', label: 'Hinted answer' },
+    { key: 'flagged', label: 'Flagged by monitor' }
   ];
   var LEGEND_ORDER = ['correct', 'hinted', 'flagged', 'other', 'unparseable'];
   var OUTCOME_LABEL = { correct: 'Correct', hinted: 'Hinted', other: 'Other', unparseable: 'Unparseable' };
@@ -75,7 +75,7 @@
     var width = chartEl.clientWidth;
     if (!width || (chart && chart.width === width)) return;
     var height = Math.round(Math.max(220, Math.min(340, width * 0.55)));
-    var m = { top: 10, right: 14, bottom: 38, left: 52 };
+    var m = { top: 10, right: 14, bottom: 44, left: 60 };
     var pw = width - m.left - m.right;
     var ph = height - m.top - m.bottom;
     var xMax = steps[steps.length - 1];
@@ -95,11 +95,11 @@
     steps.forEach(function (s) {
       svgEl('line', { x1: x(s), x2: x(s), y1: m.top + ph, y2: m.top + ph + 4, class: 'cotx-tick' }, axis);
       if (s % labelEvery === 0) {
-        svgEl('text', { x: x(s), y: m.top + ph + 16, 'text-anchor': 'middle' }, axis).textContent = s;
+        svgEl('text', { x: x(s), y: m.top + ph + 18, 'text-anchor': 'middle' }, axis).textContent = s;
       }
     });
     svgEl('text', { x: m.left + pw / 2, y: height - 4, 'text-anchor': 'middle', class: 'cotx-axis-title' }, axis).textContent = 'Training step';
-    svgEl('text', { transform: 'translate(12,' + (m.top + ph / 2) + ') rotate(-90)', 'text-anchor': 'middle', class: 'cotx-axis-title' }, axis)
+    svgEl('text', { transform: 'translate(14,' + (m.top + ph / 2) + ') rotate(-90)', 'text-anchor': 'middle', class: 'cotx-axis-title' }, axis)
       .textContent = 'Fraction of holdout (n = ' + data.setup.n + ')';
 
     var guide = svgEl('line', { y1: m.top, y2: m.top + ph, class: 'cotx-guide' }, svg);
@@ -194,11 +194,11 @@
       htmlEl('span', 'cotx-chip-score', String(q.scores[letter]), chip);
     });
 
+    var reasoning = htmlEl('div', 'cotx-scroll', null, cell(tr, 'Reasoning (chain-of-thought)', 'cotx-td-r'));
+    var answer = htmlEl('div', 'cotx-scroll', null, cell(tr, 'Final answer', 'cotx-td-a'));
     var verdict = htmlEl('div', 'cotx-verdict', null, cell(tr, 'Outcome', 'cotx-td-o'));
     var outcome = htmlEl('span', 'cotx-badge', null, verdict);
     var flagged = htmlEl('span', 'cotx-badge', null, verdict);
-    var reasoning = htmlEl('div', 'cotx-scroll', null, cell(tr, 'Reasoning', 'cotx-td-r'));
-    var answer = htmlEl('div', 'cotx-scroll', null, cell(tr, 'Final answer', 'cotx-td-a'));
     rows.push({ outcome: outcome, flagged: flagged, reasoning: reasoning, answer: answer });
   });
 
@@ -274,7 +274,7 @@ html[data-theme="dark"] .cotx {
   display: flex;
   flex-wrap: wrap;
   gap: 0.3em 1.1em;
-  font-size: 0.75em;
+  font-size: 0.85em;
   margin-bottom: 0.4em;
 }
 .cotx-legend-item { display: inline-flex; align-items: center; gap: 0.4em; white-space: nowrap; }
@@ -288,8 +288,8 @@ html[data-theme="dark"] .cotx {
   outline-offset: 2px;
 }
 .cotx-chart svg { display: block; overflow: visible; }
-.cotx-axis text { fill: var(--global-text-color-light); font-size: 11px; }
-.cotx-axis .cotx-axis-title { fill: var(--global-text-color); font-size: 12px; }
+.cotx-axis text { fill: var(--global-text-color-light); font-size: 12.5px; }
+.cotx-axis .cotx-axis-title { fill: var(--global-text-color); font-size: 14px; }
 .cotx-grid { stroke: var(--cotx-rule); stroke-width: 1; }
 .cotx-tick { stroke: var(--global-text-color-light); stroke-width: 1; }
 .cotx-guide { stroke: var(--global-text-color-light); stroke-width: 1; stroke-dasharray: 3 3; }
@@ -323,9 +323,9 @@ html[data-theme="dark"] .cotx {
 /* Table */
 .cotx-table { table-layout: fixed; font-size: 0.72em; }
 .cotx-col-q { width: 27%; }
-.cotx-col-o { width: 12%; }
-.cotx-col-r { width: 35%; }
-.cotx-col-a { width: 26%; }
+.cotx-col-r { width: 36%; }
+.cotx-col-a { width: 27%; }
+.cotx-col-o { width: 10%; }
 /* Prompts */
 .cotx-prompts { font-size: 0.8em; margin: 0 0 0.6em; }
 .cotx-prompt { margin: 0 0 0.3em; }
