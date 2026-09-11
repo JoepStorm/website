@@ -1,0 +1,405 @@
+<!-- Interactive CoT-monitor explorer. Data: _data/cot_explorer.json -->
+<div class="cotx" id="cotx">
+<figure class="cotx-figure">
+<div class="cotx-legend"></div>
+<div class="cotx-chart" tabindex="0" role="slider" aria-label="Training step"></div>
+<noscript><img src="/images/projects/cot/pressure_only-simple.png" alt="Training curves of correct, hinted and flagged answers" style="max-width: 350px; margin: 0 auto;"></noscript>
+<figcaption>{{ include.caption }}</figcaption>
+</figure>
+<div class="cotx-stepbar">
+<span>Example responses at training step <strong class="cotx-step">0</strong></span>
+<span class="cotx-hint">Hover or tap the chart to change step</span>
+</div>
+<div class="cotx-prompts"></div>
+<table class="cotx-table">
+<colgroup><col class="cotx-col-q"><col class="cotx-col-o"><col class="cotx-col-r"><col class="cotx-col-a"></colgroup>
+<thead><tr><th>Question</th><th>Outcome</th><th>Reasoning</th><th>Final answer</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+<script type="application/json" id="cotx-data">{{ site.data.cot_explorer | jsonify | replace: "</", "<\/" }}</script>
+<script>
+(function () {
+  var root = document.getElementById('cotx');
+  if (!root) return;
+  var data = JSON.parse(document.getElementById('cotx-data').textContent);
+  var curve = data.curve;
+  var steps = curve.steps;
+  var SERIES = [
+    // Gray series first so they are drawn behind the coloured ones
+    { key: 'other', label: 'Other' },
+    { key: 'unparseable', label: 'Unparseable' },
+    { key: 'correct', label: 'Correct' },
+    { key: 'hinted', label: 'Hinted' },
+    { key: 'flagged', label: 'Flagged' }
+  ];
+  var LEGEND_ORDER = ['correct', 'hinted', 'flagged', 'other', 'unparseable'];
+  var OUTCOME_LABEL = { correct: 'Correct', hinted: 'Hinted', other: 'Other', unparseable: 'Unparseable' };
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  var chartEl = root.querySelector('.cotx-chart');
+  var legendEl = root.querySelector('.cotx-legend');
+  var stepEl = root.querySelector('.cotx-step');
+  var tbody = root.querySelector('.cotx-table tbody');
+  var current = 0;
+  var chart = null; // { svg, xs, left, right, guide, dots }
+  var legendValues = {};
+  var rows = [];
+
+  function svgEl(tag, attrs, parent) {
+    var n = document.createElementNS(SVGNS, tag);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+  function htmlEl(tag, cls, text, parent) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+  function pct(v) { return (v * 100).toFixed(1) + '%'; }
+
+  /* ---------- Legend ---------- */
+  LEGEND_ORDER.forEach(function (key) {
+    var s = SERIES.filter(function (d) { return d.key === key; })[0];
+    var item = htmlEl('span', 'cotx-legend-item cotx-s-' + key, null, legendEl);
+    var sw = svgEl('svg', { width: 22, height: 10, 'aria-hidden': 'true' }, item);
+    svgEl('line', { x1: 1, y1: 5, x2: 21, y2: 5, class: 'cotx-line' }, sw);
+    htmlEl('span', 'cotx-legend-label', s.label, item);
+    legendValues[key] = htmlEl('span', 'cotx-legend-value', '', item);
+  });
+
+  /* ---------- Chart ---------- */
+  function renderChart() {
+    var width = chartEl.clientWidth;
+    if (!width || (chart && chart.width === width)) return;
+    var height = Math.round(Math.max(220, Math.min(340, width * 0.55)));
+    var m = { top: 10, right: 14, bottom: 38, left: 52 };
+    var pw = width - m.left - m.right;
+    var ph = height - m.top - m.bottom;
+    var xMax = steps[steps.length - 1];
+    function x(step) { return m.left + (step / xMax) * pw; }
+    function y(v) { return m.top + (1 - v) * ph; }
+
+    chartEl.textContent = '';
+    var svg = svgEl('svg', { width: width, height: height, viewBox: '0 0 ' + width + ' ' + height, 'aria-hidden': 'true' }, chartEl);
+
+    var axis = svgEl('g', { class: 'cotx-axis' }, svg);
+    for (var t = 0; t <= 5; t++) {
+      var v = t / 5;
+      svgEl('line', { x1: m.left, x2: m.left + pw, y1: y(v), y2: y(v), class: 'cotx-grid' }, axis);
+      svgEl('text', { x: m.left - 8, y: y(v), dy: '0.32em', 'text-anchor': 'end' }, axis).textContent = Math.round(v * 100) + '%';
+    }
+    var labelEvery = pw < 360 ? 200 : 100;
+    steps.forEach(function (s) {
+      svgEl('line', { x1: x(s), x2: x(s), y1: m.top + ph, y2: m.top + ph + 4, class: 'cotx-tick' }, axis);
+      if (s % labelEvery === 0) {
+        svgEl('text', { x: x(s), y: m.top + ph + 16, 'text-anchor': 'middle' }, axis).textContent = s;
+      }
+    });
+    svgEl('text', { x: m.left + pw / 2, y: height - 4, 'text-anchor': 'middle', class: 'cotx-axis-title' }, axis).textContent = 'Training step';
+    svgEl('text', { transform: 'translate(12,' + (m.top + ph / 2) + ') rotate(-90)', 'text-anchor': 'middle', class: 'cotx-axis-title' }, axis)
+      .textContent = 'Fraction of holdout (n = ' + data.setup.n + ')';
+
+    var guide = svgEl('line', { y1: m.top, y2: m.top + ph, class: 'cotx-guide' }, svg);
+
+    var dots = [];
+    SERIES.forEach(function (s) {
+      var g = svgEl('g', { class: 'cotx-s-' + s.key }, svg);
+      var d = steps.map(function (st, i) { return (i ? 'L' : 'M') + x(st).toFixed(1) + ',' + y(curve[s.key][i]).toFixed(1); }).join('');
+      svgEl('path', { d: d, class: 'cotx-line' }, g);
+      steps.forEach(function (st, i) {
+        svgEl('circle', { cx: x(st), cy: y(curve[s.key][i]), r: 2.5, class: 'cotx-dot' }, g);
+      });
+      dots.push({ key: s.key, el: svgEl('circle', { r: 5, class: 'cotx-dot cotx-dot-active' }, g) });
+    });
+
+    // Transparent hit area covering the whole plot (plus axis margin)
+    svgEl('rect', { x: m.left - 10, y: 0, width: pw + 20, height: m.top + ph + 20, class: 'cotx-hit' }, svg);
+
+    chart = { width: width, svg: svg, x: x, y: y, guide: guide, dots: dots };
+    updateChart();
+  }
+
+  function updateChart() {
+    if (!chart) return;
+    var gx = chart.x(steps[current]);
+    chart.guide.setAttribute('x1', gx);
+    chart.guide.setAttribute('x2', gx);
+    chart.dots.forEach(function (d) {
+      d.el.setAttribute('cx', gx);
+      d.el.setAttribute('cy', chart.y(curve[d.key][current]));
+    });
+  }
+
+  function indexFromPointer(evt) {
+    var rect = chart.svg.getBoundingClientRect();
+    var px = evt.clientX - rect.left;
+    var best = 0, bestDist = Infinity;
+    steps.forEach(function (s, i) {
+      var dist = Math.abs(chart.x(s) - px);
+      if (dist < bestDist) { bestDist = dist; best = i; }
+    });
+    return best;
+  }
+
+  /* ---------- Table ---------- */
+  function parseQuestion(text) {
+    var lines = text.split('\n');
+    var opts = [];
+    lines.slice(1).forEach(function (l) {
+      var mt = /^\(([A-Z])\)\s*(.*)$/.exec(l);
+      if (mt) opts.push({ letter: mt[1], text: mt[2] });
+    });
+    return { stem: lines[0], options: opts };
+  }
+
+  function cell(tr, label, cls) {
+    var td = htmlEl('td', cls, null, tr);
+    td.setAttribute('data-label', label);
+    return td;
+  }
+
+  var promptsEl = root.querySelector('.cotx-prompts');
+  [['policy', 'Policy prompt'], ['judge', 'Judge prompt']].forEach(function (p) {
+    if (!data.prompts || !data.prompts[p[0]]) return;
+    var det = htmlEl('details', 'cotx-prompt', null, promptsEl);
+    htmlEl('summary', null, p[1], det);
+    htmlEl('div', 'cotx-scroll cotx-prompt-body', data.prompts[p[0]], det);
+  });
+
+  data.questions.forEach(function (q) {
+    var tr = htmlEl('tr', null, null, tbody);
+    var parsed = parseQuestion(q.text);
+
+    var tdQ = cell(tr, 'Question', 'cotx-td-q');
+    var qBox = htmlEl('div', 'cotx-scroll cotx-q', null, tdQ);
+    htmlEl('div', 'cotx-q-stem', parsed.stem, qBox);
+    var ol = htmlEl('ul', 'cotx-opts', null, qBox);
+    parsed.options.forEach(function (o) {
+      var li = htmlEl('li', null, null, ol);
+      htmlEl('span', 'cotx-opt-letter', o.letter, li);
+      htmlEl('span', null, o.text, li);
+    });
+    var scores = htmlEl('div', 'cotx-scores', null, tdQ);
+    Object.keys(q.scores).forEach(function (letter) {
+      var cls = 'cotx-chip';
+      var title = 'Score ' + q.scores[letter];
+      if (letter === q.correct) { cls += ' is-correct'; title += ' · correct answer'; }
+      if (letter === q.hinted) { cls += ' is-hinted'; title += ' · highest score (hinted)'; }
+      var chip = htmlEl('span', cls, null, scores);
+      chip.title = title;
+      htmlEl('span', 'cotx-chip-letter', letter, chip);
+      htmlEl('span', 'cotx-chip-score', String(q.scores[letter]), chip);
+    });
+
+    var verdict = htmlEl('div', 'cotx-verdict', null, cell(tr, 'Outcome', 'cotx-td-o'));
+    var outcome = htmlEl('span', 'cotx-badge', null, verdict);
+    var flagged = htmlEl('span', 'cotx-badge', null, verdict);
+    var reasoning = htmlEl('div', 'cotx-scroll', null, cell(tr, 'Reasoning', 'cotx-td-r'));
+    var answer = htmlEl('div', 'cotx-scroll', null, cell(tr, 'Final answer', 'cotx-td-a'));
+    rows.push({ outcome: outcome, flagged: flagged, reasoning: reasoning, answer: answer });
+  });
+
+  function updateTable() {
+    var examples = data.examples[String(steps[current])] || [];
+    rows.forEach(function (r, i) {
+      var ex = examples[i];
+      if (!ex) return;
+      r.outcome.textContent = OUTCOME_LABEL[ex.outcome] || ex.outcome;
+      r.outcome.className = 'cotx-badge cotx-badge-' + ex.outcome;
+      r.flagged.textContent = ex.flagged ? 'Flagged' : 'Not flagged';
+      r.flagged.className = 'cotx-badge ' + (ex.flagged ? 'cotx-badge-flagged' : 'cotx-badge-muted');
+      r.reasoning.textContent = ex.cot;
+      r.answer.textContent = ex.answer;
+      r.reasoning.scrollTop = 0;
+      r.answer.scrollTop = 0;
+    });
+  }
+
+  /* ---------- State ---------- */
+  function select(i) {
+    i = Math.max(0, Math.min(steps.length - 1, i));
+    if (i === current && rows[0].reasoning.textContent) return;
+    current = i;
+    stepEl.textContent = steps[i];
+    chartEl.setAttribute('aria-valuenow', steps[i]);
+    chartEl.setAttribute('aria-valuetext', 'Training step ' + steps[i]);
+    LEGEND_ORDER.forEach(function (key) { legendValues[key].textContent = pct(curve[key][i]); });
+    updateChart();
+    updateTable();
+  }
+
+  chartEl.setAttribute('aria-valuemin', steps[0]);
+  chartEl.setAttribute('aria-valuemax', steps[steps.length - 1]);
+  chartEl.addEventListener('pointermove', function (e) { if (chart) select(indexFromPointer(e)); });
+  chartEl.addEventListener('pointerdown', function (e) { if (chart) select(indexFromPointer(e)); });
+  chartEl.addEventListener('keydown', function (e) {
+    var next = { ArrowLeft: current - 1, ArrowDown: current - 1, ArrowRight: current + 1, ArrowUp: current + 1, Home: 0, End: steps.length - 1 }[e.key];
+    if (next === undefined) return;
+    e.preventDefault();
+    select(next);
+  });
+
+  renderChart();
+  select(0);
+  if (window.ResizeObserver) {
+    new ResizeObserver(renderChart).observe(chartEl);
+  } else {
+    window.addEventListener('resize', renderChart);
+  }
+})();
+</script>
+<style>
+.cotx {
+  --cotx-correct: #1b9e77;
+  --cotx-hinted: #d95f02;
+  --cotx-flagged: #7570b3;
+  --cotx-gray: #8c8c8c;
+  --cotx-rule: color-mix(in srgb, var(--global-text-color) 14%, transparent);
+  --cotx-h: 11em;
+  margin: 1.5em 0 2em;
+}
+html[data-theme="dark"] .cotx {
+  --cotx-correct: #3ccf9e;
+  --cotx-hinted: #ff8b3d;
+  --cotx-flagged: #aba6f0;
+  --cotx-gray: #a8a8a8;
+}
+.cotx-figure { margin: 0 0 1em; }
+.cotx-figure figcaption { margin-top: 0.5em; }
+/* Legend */
+.cotx-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em 1.1em;
+  font-size: 0.75em;
+  margin-bottom: 0.4em;
+}
+.cotx-legend-item { display: inline-flex; align-items: center; gap: 0.4em; white-space: nowrap; }
+.cotx-legend-value { font-variant-numeric: tabular-nums; color: var(--global-text-color-light); min-width: 3.2em; }
+/* Chart */
+.cotx-chart {
+  width: 100%;
+  touch-action: pan-y;
+  cursor: crosshair;
+  border-radius: 4px;
+  outline-offset: 2px;
+}
+.cotx-chart svg { display: block; overflow: visible; }
+.cotx-axis text { fill: var(--global-text-color-light); font-size: 11px; }
+.cotx-axis .cotx-axis-title { fill: var(--global-text-color); font-size: 12px; }
+.cotx-grid { stroke: var(--cotx-rule); stroke-width: 1; }
+.cotx-tick { stroke: var(--global-text-color-light); stroke-width: 1; }
+.cotx-guide { stroke: var(--global-text-color-light); stroke-width: 1; stroke-dasharray: 3 3; }
+.cotx-hit { fill: transparent; }
+.cotx-line { fill: none; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.cotx-dot-active { stroke: var(--global-bg-color); stroke-width: 2; }
+.cotx-s-correct { --c: var(--cotx-correct); }
+.cotx-s-hinted { --c: var(--cotx-hinted); }
+.cotx-s-flagged { --c: var(--cotx-flagged); }
+.cotx-s-other, .cotx-s-unparseable { --c: var(--cotx-gray); }
+.cotx .cotx-line { stroke: var(--c); }
+.cotx .cotx-dot { fill: var(--c); }
+.cotx-s-flagged .cotx-line { stroke-dasharray: 9 4 2 4; stroke-linecap: butt; }
+.cotx-s-other .cotx-line { stroke-width: 1.5; stroke-dasharray: 5 3; stroke-linecap: butt; }
+.cotx-s-unparseable .cotx-line { stroke-width: 1.5; stroke-dasharray: 1.5 3; }
+.cotx-s-other .cotx-dot:not(.cotx-dot-active),
+.cotx-s-unparseable .cotx-dot:not(.cotx-dot-active) { r: 2; }
+.cotx-s-other .cotx-dot-active, .cotx-s-unparseable .cotx-dot-active { r: 4; }
+/* Step bar */
+.cotx-stepbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.2em 1em;
+  font-size: 0.85em;
+  margin: 0 0 0.5em;
+}
+.cotx-step { font-variant-numeric: tabular-nums; }
+.cotx-hint { color: var(--global-text-color-light); font-size: 0.9em; }
+/* Table */
+.cotx-table { table-layout: fixed; font-size: 0.72em; }
+.cotx-col-q { width: 27%; }
+.cotx-col-o { width: 12%; }
+.cotx-col-r { width: 35%; }
+.cotx-col-a { width: 26%; }
+/* Prompts */
+.cotx-prompts { font-size: 0.8em; margin: 0 0 0.6em; }
+.cotx-prompt { margin: 0 0 0.3em; }
+.cotx-prompt summary { cursor: pointer; font-weight: bold; }
+.cotx-prompt .cotx-prompt-body { height: auto; max-height: 16em; margin-top: 0.3em; font-size: 0.9em; }
+.cotx-verdict { display: flex; flex-direction: column; align-items: flex-start; gap: 0.35em; }
+.cotx-table, .cotx-table th, .cotx-table td { border-color: var(--cotx-rule); }
+.cotx-table thead { background: var(--global-thead-color); }
+.cotx-table td { vertical-align: top; }
+.cotx .cotx-q { height: calc(var(--cotx-h) - 2.4em); white-space: normal; }
+.cotx-q-stem { margin-bottom: 0.2em; }
+.cotx-opts { list-style: none; margin: 0.4em 0 0; padding: 0; }
+.cotx-opts li { display: flex; gap: 0.4em; margin: 0 0 0.25em; line-height: 1.3; }
+.cotx-opt-letter { font-weight: bold; flex: none; }
+.cotx-scores { display: flex; flex-wrap: wrap; gap: 0.3em; margin-top: 0.5em; }
+.cotx-chip {
+  display: inline-flex;
+  gap: 0.3em;
+  padding: 0.05em 0.45em;
+  border: 1px solid var(--cotx-rule);
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.cotx-chip-letter { font-weight: bold; }
+.cotx-chip.is-correct { border-color: var(--cotx-correct); color: var(--cotx-correct); }
+.cotx-chip.is-hinted { border-color: var(--cotx-hinted); color: var(--cotx-hinted); }
+.cotx-badge {
+  display: inline-block;
+  padding: 0.1em 0.5em;
+  border-radius: 999px;
+  font-weight: bold;
+  white-space: nowrap;
+  color: var(--b, var(--global-text-color-light));
+  background: color-mix(in srgb, var(--b, var(--cotx-gray)) 16%, transparent);
+}
+.cotx-badge-correct { --b: var(--cotx-correct); }
+.cotx-badge-hinted { --b: var(--cotx-hinted); }
+.cotx-badge-flagged { --b: var(--cotx-flagged); }
+.cotx-badge-other, .cotx-badge-unparseable { --b: var(--cotx-gray); }
+.cotx-badge-muted { font-weight: normal; }
+.cotx-scroll {
+  height: var(--cotx-h);
+  overflow-y: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+  padding: 0.4em 0.5em;
+  background: var(--global-code-background-color);
+  border-radius: 4px;
+  overscroll-behavior: contain;
+}
+/* Stack rows into cards on narrow screens */
+@media (max-width: 700px) {
+  .cotx-table, .cotx-table tbody, .cotx-table tr, .cotx-table td { display: block; width: auto; }
+  .cotx-table { border: none; font-size: 0.8em; }
+  .cotx-table colgroup, .cotx-table thead { display: none; }
+  .cotx-table tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1px solid var(--cotx-rule);
+    border-radius: 6px;
+    margin-bottom: 1em;
+  }
+  .cotx-table td { border: none; }
+  .cotx-table td { grid-column: 1 / -1; }
+  .cotx-verdict { flex-direction: row; }
+  .cotx-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-weight: bold;
+    color: var(--global-text-color-light);
+    margin-bottom: 0.25em;
+  }
+  .cotx { --cotx-h: 10em; }
+}
+</style>
