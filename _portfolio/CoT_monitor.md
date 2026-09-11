@@ -7,7 +7,7 @@ tags:
   - AI Safety
   - Research
 header:
-    media: "images/projects/cot/pressure_only-simple.png"
+    teaser: "images/projects/cot/pressure_only-simple.png" # teaser: shown on the portfolio overview only, not on this page
 ---
 
 ## Chain-of-Thought monitors should not be trained against
@@ -29,9 +29,9 @@ This post demonstrates that failure in a simplified setup: the model converges o
 
 **Training.** Qwen3-4B is fine-tuned with GRPO (group size 8, no KL term) and LoRA (rank 32), using TRL with vLLM serving the rollouts. Training is done on 2 A100-GPUs, with one training run taking approximately 10 hours. 
 
-**Monitor.** A second, frozen Qwen3-4B instance acts as the CoT monitor. It is shown the chain-of-thought only and returns a binary verdict on whether the reasoning relies on the leaked scores. Restricting the monitor to the CoT is what makes this a test of obfuscation rather than a second correctness signal.
+**Monitor.** A second, frozen Qwen3-4B instance acts as the CoT monitor. It is shown only the chain-of-thought and returns a binary verdict on whether the reasoning relies on the leaked scores. Using the exact same model for the judge as for the policy is a serious limitation; but not one that is expected to fundamentally change the conclusions. 
 
-**Reward.** With reward $r_\text{ans}=1$ when the graded answer is produced and penalty $p_\text{flag}=1$ when the monitor flags the CoT:
+**Reward.** With reward $$r_\text{ans}=1$$ when the graded answer is produced and penalty $$p_\text{flag}=1$$ when the monitor flags the CoT:
 
 $$
 R = 2.0 \, r_\text{ans} \;-\; 0.05 \, p_\text{flag} \;+\; 0.1 \, r_\text{fmt} \;-\; 0.1 \, p_\text{len} 
@@ -41,7 +41,7 @@ The last two terms penalise a malformed or degenerate CoT.
 
 ### Results
 
-Results on a hold-out dataset that was run for several checkpoints during training are shown in Figure 1. During training, the model quickly learns to use the provided scores, as this leads to a high scoring  $r_\text{ans}$. Only later in training does it learn to obfuscate its reasoning from the monitor.
+Results on a hold-out dataset that was run for several checkpoints during training are shown in Figure 1. During training, the model quickly learns to use the provided scores, as this leads to a high scoring $$r_\text{ans}$$. Only later in training does it learn to obfuscate its reasoning from the monitor. This reinforces the main known finding that training against a CoT monitor causes obfuscation.
 
 Using the data explorer, it can be observed that the CoT and final answers degenerate for the later training steps. While the CoTs in the last step are not flagged, it is clear to a human observer that the model is reward hacking. This shows that the RL setup resulted in a way that tricks the specific judge model. A stronger judge would likely be more difficult to trick, but the incentives to trick it would remain.
 
@@ -52,6 +52,7 @@ This sprint contains many limitations, some of which include:
   - Only a single RL run is performed.
   - Evaluation was done greedily at temperature=0.
   - The reward hacking is in-distribution of the training task.
+  - Reward hacking is possible on all training samples; there are no regularing samples that retain general capability/reasoning. 
   - Highly capable LLMs are able to reason more during their forward passes, decreasing their monitorability. If this trend persists, it could make CoT-monitoring obsolete.
 
 ---
