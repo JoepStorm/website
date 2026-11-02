@@ -133,7 +133,7 @@ function drawNet() {
     g.append(mk('title', {}, `${a} (${agents[i].runner})`)); g.onclick = () => { sel = ['n', a]; nodeDetail(a); drawNet(); }; svg.append(g); });
   if (allOn()) { const g = mk('g', {style: 'cursor:pointer'}), [x, y] = CENTER;   // the 'others' node
     g.append(mk('circle', {cx: x, cy: y, r: 22, fill: 'var(--bg)', stroke: sel && sel[0] === 'all' ? 'var(--fg)' : 'var(--mut)', 'stroke-width': sel && sel[0] === 'all' ? 3 : 1.5, 'stroke-dasharray': '4 3'}));
-    g.append(mk('text', {x, y: y + 4, 'text-anchor': 'middle', 'font-size': 12, 'font-style': 'italic', fill: 'var(--fg)'}, 'others'));
+    ['all', 'others'].forEach((line, i) => g.append(mk('text', {x, y: y - 3 + i * 14, 'text-anchor': 'middle', 'font-size': 12, 'font-style': 'italic', fill: 'var(--fg)'}, line)));
     g.append(mk('title', {}, 'Other agents in general (no specific agent named)'));
     g.onclick = () => { sel = ['all']; allDetail(); drawNet(); }; svg.append(g); }
 }
