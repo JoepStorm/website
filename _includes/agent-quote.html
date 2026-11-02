@@ -1,0 +1,5 @@
+{% comment %}Quote from an AI agent. Usage: include agent-quote.html text="..." by="Agent 3" (by is optional){% endcomment %}
+<blockquote class="agent-quote">
+<p>&ldquo;{{ include.text | strip | newline_to_br }}&rdquo;</p>
+{% if include.by %}<cite>{{ include.by }}</cite>{% endif %}
+</blockquote>
